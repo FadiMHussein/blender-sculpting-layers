@@ -1,5 +1,5 @@
 #  Copyright (C) 2021 Fadi Hussein
-#  This file is part of blender-sculpting-layers <https://github.com/FadiMHussein/blender-sculpting-layers.git>.
+#  This file is part of blender-sculpting-layers <https://github.com/FadiMHussein/blender-sculpting-layers>.
 #
 #  blender-sculpting-layers is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by

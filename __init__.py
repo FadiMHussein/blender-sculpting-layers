@@ -1,26 +1,31 @@
 #  Copyright (C) 2021 Fadi Hussein
-#  This file is part of blender-sculpting-layers <https://github.com/FadiMHussein/blender-sculpting-layers>.
+#  This file is part of BlenderSculptingLayers <https://github.com/FadiMHussein/blender-sculpting-layers>.
 #
-#  blender-sculpting-layers is free software: you can redistribute it and/or modify
+#  BlenderSculptingLayers is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
-#  blender-sculpting-layers is distributed in the hope that it will be useful,
+#  BlenderSculptingLayers is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
 #  You should have received a copy of the GNU General Public License
-#  along with blender-sculpting-layers.  If not, see <http://www.gnu.org/licenses/>.
+#  along with BlenderSculptingLayers.  If not, see <http://www.gnu.org/licenses/>.
 
 import bpy
 from bpy.props import PointerProperty
 
-from .ui.operators import ApplyAllLayerOperator, DeleteAllLayerOperator, AddLayerOperator, ApplyLayerOperator, \
-    DeleteLayerOperator, ToggleLayerVisibilityOperator
-from .ui.properties import SculptingLayersProperties, LayerProperties
-from .ui.panels import BasicPanel, MultiResolutionPanel, LayersPanel
+from .multi_res.operators import IncreaseResolutionOperator, DecreaseResolutionOperator, UnSubdivideOperator, \
+    ApplyResolutionConfigOperator, ClearResolutionConfigOperator, EnableMultiResolutionOperator, \
+    DisableMultiResolutionOperator
+from .multi_res.panels import MultiResolutionPanel
+from .basic.operators import AddLayerOperator, ApplyAllLayerOperator, DeleteAllLayerOperator, ApplyLayerOperator, \
+    DeleteLayerOperator, ToggleLayerVisibilityOperator, ToggleLayerRecordingOperator, DisableSculptingLayersOperator, \
+    EnableSculptingLayersOperator
+from .common.properties import LayerProperties, SculptingLayersProperties
+from .basic.panels import BasicPanel, LayersPanel
 
 bl_info = {
     "name": "Sculpting Layers",
@@ -47,13 +52,24 @@ classes = (
     SculptingLayersProperties,
 
     # Operators
+    EnableSculptingLayersOperator,
+    DisableSculptingLayersOperator,
+
+    EnableMultiResolutionOperator,
+    DisableMultiResolutionOperator,
+
     AddLayerOperator,
     ApplyAllLayerOperator,
     DeleteAllLayerOperator,
     ApplyLayerOperator,
     DeleteLayerOperator,
     ToggleLayerVisibilityOperator,
-
+    ToggleLayerRecordingOperator,
+    IncreaseResolutionOperator,
+    DecreaseResolutionOperator,
+    UnSubdivideOperator,
+    ApplyResolutionConfigOperator,
+    ClearResolutionConfigOperator,
     # Menus
 
     # Panels
@@ -67,7 +83,7 @@ def register():
     """
     Register addon components
     """
-    from bpy.utils import register_class, unregister_class
+    from bpy.utils import register_class
 
     for cls in classes:
         register_class(cls)

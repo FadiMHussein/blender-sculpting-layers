@@ -72,12 +72,7 @@ A Wiki is being worked on .....
 
 ---
 
-> - [x] Fixed
-> - [ ] Not Fixed
-> - [ ] _Does Not Affect Actual Workflow_
-
-- [ ] _Apply a Layer does not Apply the Relative Shape Key ( You need to Apply the Last Shape Key or 
-  Apply All to Actually Apply Keys to the Original Mesh Data )_
+[Bug Tracker](https://github.com/FadiMHussein/blender-sculpting-layers/issues)
 
 ### Future Development
 

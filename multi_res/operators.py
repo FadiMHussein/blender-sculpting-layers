@@ -32,15 +32,6 @@ class EnableMultiResolutionOperator(Operator):
 
     @classmethod
     def poll(cls, context):
-        """
-        Operator Activation Function
-
-        :param context: Current Context
-        :type context: bpy.context
-
-        :return: object is active or not
-        :rtype: bool
-        """
         return context.active_object is not None
 
     def execute(self, context):
@@ -68,15 +59,6 @@ class DisableMultiResolutionOperator(Operator):
 
     @classmethod
     def poll(cls, context):
-        """
-        Operator Activation Function
-
-        :param context: Current Context
-        :type context: bpy.context
-
-        :return: object is active or not
-        :rtype: bool
-        """
         return context.active_object is not None
 
     def execute(self, context):
@@ -104,15 +86,6 @@ class IncreaseResolutionOperator(Operator):
 
     @classmethod
     def poll(cls, context):
-        """
-        Operator Activation Function
-
-        :param context: Current Context
-        :type context: bpy.context
-
-        :return: object is active or not
-        :rtype: bool
-        """
         return context.active_object is not None
 
     def execute(self, context):
@@ -132,15 +105,6 @@ class DecreaseResolutionOperator(Operator):
 
     @classmethod
     def poll(cls, context):
-        """
-        Operator Activation Function
-
-        :param context: Current Context
-        :type context: bpy.context
-
-        :return: object is active or not
-        :rtype: bool
-        """
         return context.active_object is not None
 
     def execute(self, context):
@@ -160,15 +124,6 @@ class UnSubdivideOperator(Operator):
 
     @classmethod
     def poll(cls, context):
-        """
-        Operator Activation Function
-
-        :param context: Current Context
-        :type context: bpy.context
-
-        :return: object is active or not
-        :rtype: bool
-        """
         return context.active_object is not None
 
     def execute(self, context):
@@ -188,15 +143,6 @@ class ApplyResolutionConfigOperator(Operator):
 
     @classmethod
     def poll(cls, context):
-        """
-        Operator Activation Function
-
-        :param context: Current Context
-        :type context: bpy.context
-
-        :return: object is active or not
-        :rtype: bool
-        """
         return context.active_object is not None
 
     def execute(self, context):
@@ -216,15 +162,6 @@ class ClearResolutionConfigOperator(Operator):
 
     @classmethod
     def poll(cls, context):
-        """
-        Operator Activation Function
-
-        :param context: Current Context
-        :type context: bpy.context
-
-        :return: object is active or not
-        :rtype: bool
-        """
         return context.active_object is not None
 
     def execute(self, context):

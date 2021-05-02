@@ -16,9 +16,9 @@
 #
 import textwrap
 
-from bpy.props import IntProperty
+from bpy.props import IntProperty, StringProperty, FloatProperty
 from bpy.types import Operator
-from ..common.properties import SculptingLayersProperties
+from ..common.properties import SculptingLayersProperties, LayerProperties
 from ..single_res import callbacks as single_res_callbacks
 from ..multi_res import callbacks as multi_res_callbacks
 
@@ -33,7 +33,7 @@ class EnableSculptingLayersOperator(Operator):
     # bl_options = {"UNDO"}
 
     def execute(self, context):
-        context.object.sculpting_layers_properties.is_enabled_status = True
+        context.object.sculpting_layers.is_enabled_status = True
         return {'FINISHED'}
 
     def draw(self, context):
@@ -55,7 +55,10 @@ class DisableSculptingLayersOperator(Operator):
     # bl_options = {"UNDO"}
 
     def execute(self, context):
-        context.object.sculpting_layers_properties.is_enabled_status = False
+        if context.object.sculpting_layers.multi_resolution_enabled_status:
+            multi_res_callbacks.disable_sculpting_layers_callback(context)
+        else:
+            single_res_callbacks.disable_sculpting_layers_callback(context)
         return {'FINISHED'}
 
     def draw(self, context):
@@ -77,7 +80,7 @@ class AddLayerOperator(Operator):
     # bl_options = {"UNDO"}
 
     def execute(self, context):
-        if context.object.sculpting_layers_properties.multi_resolution_enabled_status:
+        if context.object.sculpting_layers.multi_resolution_enabled_status:
             multi_res_callbacks.add_layer_callback(context)
         else:
             single_res_callbacks.add_layer_callback(context)
@@ -95,19 +98,10 @@ class DeleteAllLayerOperator(Operator):
 
     @classmethod
     def poll(cls, context):
-        """
-        Operator Activation Function
-
-        :param context: Current Context
-        :type context: bpy.types.Context
-
-        :return: object is active or not
-        :rtype: bool
-        """
         return context.active_object is not None
 
     def execute(self, context):
-        if context.object.sculpting_layers_properties.multi_resolution_enabled_status:
+        if context.object.sculpting_layers.multi_resolution_enabled_status:
             multi_res_callbacks.delete_all_layers_callback(context)
         else:
             single_res_callbacks.delete_all_layers_callback(context)
@@ -128,19 +122,10 @@ class ApplyAllLayerOperator(Operator):
 
     @classmethod
     def poll(cls, context):
-        """
-        Operator Activation Function
-
-        :param context: Current Context
-        :type context: bpy.types.Context
-
-        :return: object is active or not
-        :rtype: bool
-        """
         return context.active_object is not None
 
     def execute(self, context):
-        if context.object.sculpting_layers_properties.multi_resolution_enabled_status:
+        if context.object.sculpting_layers.multi_resolution_enabled_status:
             multi_res_callbacks.apply_all_layers_callback(context)
         else:
             single_res_callbacks.apply_all_layers_callback(context)
@@ -169,7 +154,7 @@ class ApplyLayerOperator(Operator):
         return context.active_object is not None
 
     def execute(self, context):
-        if context.object.sculpting_layers_properties.multi_resolution_enabled_status:
+        if context.object.sculpting_layers.multi_resolution_enabled_status:
             multi_res_callbacks.apply_layer_callback(context, self.layer_index)
         else:
             single_res_callbacks.apply_layer_callback(context, self.layer_index)
@@ -195,19 +180,10 @@ class DeleteLayerOperator(Operator):
 
     @classmethod
     def poll(cls, context):
-        """
-        Operator Activation Function
-
-        :param context: Current Context
-        :type context: bpy.context
-
-        :return: object is active or not
-        :rtype: bool
-        """
         return context.active_object is not None
 
     def execute(self, context):
-        if context.object.sculpting_layers_properties.multi_resolution_enabled_status:
+        if context.object.sculpting_layers.multi_resolution_enabled_status:
             multi_res_callbacks.delete_layer_callback(context, self.layer_index)
         else:
             single_res_callbacks.delete_layer_callback(context, self.layer_index)
@@ -233,25 +209,16 @@ class ToggleLayerVisibilityOperator(Operator):
 
     @classmethod
     def poll(cls, context):
-        """
-        Operator Activation Function
-
-        :param context: Current Context
-        :type context: bpy.context
-
-        :return: object is active or not
-        :rtype: bool
-        """
         return context.active_object is not None
 
     def execute(self, context):
-        if context.object.sculpting_layers_properties.layers[self.layer_index].is_enabled:
-            if context.object.sculpting_layers_properties.multi_resolution_enabled_status:
+        if context.object.sculpting_layers.layers[self.layer_index].is_enabled:
+            if context.object.sculpting_layers.multi_resolution_enabled_status:
                 multi_res_callbacks.hide_layer_callback(context, self.layer_index)
             else:
                 single_res_callbacks.hide_layer_callback(context, self.layer_index)
         else:
-            if context.object.sculpting_layers_properties.multi_resolution_enabled_status:
+            if context.object.sculpting_layers.multi_resolution_enabled_status:
                 multi_res_callbacks.show_layer_callback(context, self.layer_index)
             else:
                 single_res_callbacks.show_layer_callback(context, self.layer_index)
@@ -278,14 +245,46 @@ class ToggleLayerRecordingOperator(Operator):
         return context.active_object is not None
 
     def execute(self, context):
-        if context.object.sculpting_layers_properties.layers[self.layer_index].is_recording:
-            if context.object.sculpting_layers_properties.multi_resolution_enabled_status:
+        if context.object.sculpting_layers.layers[self.layer_index].is_recording:
+            if context.object.sculpting_layers.multi_resolution_enabled_status:
                 multi_res_callbacks.stop_layer_recording_callback(context, self.layer_index)
             else:
                 single_res_callbacks.stop_layer_recording_callback(context, self.layer_index)
         else:
-            if context.object.sculpting_layers_properties.multi_resolution_enabled_status:
+            if context.object.sculpting_layers.multi_resolution_enabled_status:
                 multi_res_callbacks.start_layer_recording_callback(context, self.layer_index)
             else:
                 single_res_callbacks.start_layer_recording_callback(context, self.layer_index)
         return {'FINISHED'}
+
+
+class UpdateLayerWeighOperator(Operator):
+    """
+    Operator to Update Layer Weight
+    """
+    bl_label = "Apply All"
+    bl_idname = "object.update_layer_weight"
+    # TODO: Add Undo Action
+    # bl_options = {"UNDO"}
+
+    shape_key_name = StringProperty(
+        name="shape_key_name"
+    )
+
+    weight = FloatProperty(
+        name="weight"
+    )
+
+    @classmethod
+    def poll(cls, context):
+        return context.active_object is not None
+
+    def execute(self, context):
+        if context.object.sculpting_layers.multi_resolution_enabled_status:
+            multi_res_callbacks.update_layer_weight_callback(context, self.shape_key_name, self.weight)
+        else:
+            single_res_callbacks.update_layer_weight_callback(context, self.shape_key_name, self.weight)
+        return {'FINISHED'}
+
+    def invoke(self, context, event):
+        return context.window_manager.invoke_props_dialog(self)

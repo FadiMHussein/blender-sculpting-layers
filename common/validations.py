@@ -33,25 +33,25 @@ import bpy
 from .properties import SculptingLayersProperties
 
 
-def addon_is_enabled(properties):
+def addon_is_enabled(active_object):
     """
     Validate if sculpting layers option is enabled
 
-    :param properties: Current Context Properties
-    :type properties: SculptingLayersProperties
+    :param active_object: bpy.types.Object
+    :type active_object: bpy.types.Object
 
     :return: Validation Results
     :rtype: bool
     """
-    return properties.is_enabled_status
+    return active_object.sculpting_layers.is_enabled_status
 
 
-def can_add_layers(context):
+def can_add_layers(active_object):
     """
     Validate if sculpting layers can be added
 
-    :param context: Current Context
-    :type context: bpy.context
+    :param active_object: bpy.types.Object
+    :type active_object: bpy.types.Object
 
     :return: Validation Results
     :rtype: bool
@@ -59,66 +59,44 @@ def can_add_layers(context):
     return True
 
 
-def can_enable_multires(context):
+def can_record(active_object):
     """
-    Validate if MultiResolution can be enabled
+    Validate if sculpting layers can be added
 
-    :param context: Current Context
-    :type context: bpy.context
+    :param active_object: Active Object
+    :type active_object: bpy.types.Object
 
     :return: Validation Results
     :rtype: bool
     """
+    for layer in active_object.sculpting_layers.layers:
+        if layer.is_recording:
+            return False
+
     return True
 
 
-def can_modify_multi_res_configs(properties):
-    """
-    Validate if MultiResolution modifier is added and can start increasing/decreasing resolution
-
-    :param properties: Current Context Properties
-    :type properties: SculptingLayersProperties
-
-    :return: Validation Results
-    :rtype: bool
-    """
-    return properties.multi_resolution_enabled and properties.multi_res_object is None
-
-
-def can_change_res(properties):
-    """
-    Validate if MultiResolution Config is Enabled and you Can Change Resolution
-
-    :param properties: Current Context Properties
-    :type properties: SculptingLayersProperties
-
-    :return: Validation Results
-    :rtype: bool
-    """
-    return properties.multi_resolution_enabled and bpy.context.object.modifiers[properties.multi_res_modifier_name] is not None
-
-
-def has_sculpting_layers(properties):
+def has_sculpting_layers(active_object):
     """
     Validate if Sculpting Layers are Present
 
-    :param properties: Current Context Properties
-    :type properties: SculptingLayersProperties
+    :param active_object: bpy.types.Object
+    :type active_object: bpy.types.Object
 
     :return: Validation Results
     :rtype: bool
     """
-    return len(properties.layers) != 0
+    return len(active_object.sculpting_layers.layers) != 0
 
 
-def has_shape_keys(sculpting_object):
+def has_shape_keys(active_object):
     """
     Validate if Object has Shape Keys
 
-    :param sculpting_object: bpy.types.Object
-    :type sculpting_object: bpy.types.Object
+    :param active_object: bpy.types.Object
+    :type active_object: bpy.types.Object
 
     :return: Validation Results
     :rtype: bool
     """
-    return sculpting_object.data.shape_keys is not None
+    return active_object.data.shape_keys is not None

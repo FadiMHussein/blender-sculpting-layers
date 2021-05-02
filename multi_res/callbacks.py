@@ -16,12 +16,32 @@
 #
 import bpy
 from bpy.types import MultiresModifier
+from ..single_res import callbacks as single_res_callbacks
+
+
+def disable_sculpting_layers_callback(context):
+    """
+    Disable Sculpting Layers
+
+    :param context: Current Context
+    :type context: bpy.context
+    """
+    # delete_all_layers_callback(context)
+    single_res_callbacks.delete_all_layers_callback(context)
+    context.object.sculpting_layers.is_enabled_status = False
 
 
 # TODO: Fix Update Modifier Name When Change By User
 def enable_multi_resolution(context):
+    """
+    Enable Multi Resolution
+
+    :param context: Current Context
+    :type context: bpy.context
+    """
     # Clear Sculpting Layers
-    delete_all_layers_callback(context)
+    # delete_all_layers_callback(context)
+    single_res_callbacks.delete_all_layers_callback(context)
 
     # Clear Shape Keys
     context.object.shape_key_clear()
@@ -32,24 +52,31 @@ def enable_multi_resolution(context):
     # Name the Modifier
     modifier.name = "Sculpting Layers"
     # Copy the name to the Addon Properties and Store it in Object
-    context.object.sculpting_layers_properties.multi_res_modifier_name = "Sculpting Layers"
+    context.object.sculpting_layers.multi_res_modifier_name = "Sculpting Layers"
 
-    context.object.sculpting_layers_properties.multi_resolution_enabled_status = True
+    context.object.sculpting_layers.multi_resolution_enabled_status = True
 
 
 # TODO: Fix Update Modifier Name When Change By User
 def disable_multi_resolution(context):
+    """
+    Disable Multi Resolution
+
+    :param context: Current Context
+    :type context: bpy.context
+    """
     # Clear Sculpting Layers
-    delete_all_layers_callback(context)
+    # delete_all_layers_callback(context)
+    single_res_callbacks.delete_all_layers_callback(context)
 
     # Clear Configurations
     clear_resolution_config_callback(context)
 
     # Remove Modifier
-    modifier = context.object.modifiers[context.object.sculpting_layers_properties.multi_res_modifier_name]
+    modifier = context.object.modifiers[context.object.sculpting_layers.multi_res_modifier_name]
     context.object.modifiers.remove(modifier)
 
-    context.object.sculpting_layers_properties.multi_resolution_enabled_status = False
+    context.object.sculpting_layers.multi_resolution_enabled_status = False
 
 
 def increase_resolution_callback(context):
@@ -61,9 +88,8 @@ def increase_resolution_callback(context):
 
     :return:
     """
-    # TODO: Move Function To Multi Resolution Module
     # Get Modifier Name
-    modifier_name = context.object.sculpting_layers_properties.multi_res_modifier_name
+    modifier_name = context.object.sculpting_layers.multi_res_modifier_name
 
     # Apply Subdivisions
     bpy.ops.object.multires_subdivide(modifier=modifier_name)
@@ -84,9 +110,8 @@ def decrease_resolution_callback(context):
 
     :return:
     """
-    # TODO: Move Function To Multi Resolution Module
     # Get Modifier Name
-    modifier_name = context.object.sculpting_layers_properties.multi_res_modifier_name
+    modifier_name = context.object.sculpting_layers.multi_res_modifier_name
 
     # Set All Levels of Modifier to the Highest Available Level - 1
     modifier = context.object.modifiers[modifier_name]
@@ -107,9 +132,8 @@ def un_subdivide_mesh_callback(context):
 
     :return:
     """
-    # TODO: Move Function To Multi Resolution Module
     # Get Modifier Name
-    modifier_name = context.object.sculpting_layers_properties.multi_res_modifier_name
+    modifier_name = context.object.sculpting_layers.multi_res_modifier_name
 
     # Apply Un-Subdivision
     bpy.ops.object.multires_unsubdivide(modifier=modifier_name)
@@ -130,20 +154,19 @@ def apply_resolution_config_callback(context):
 
     :return:
     """
-    # TODO: Move Function To Multi Resolution Module
     # Get the Sculpting Original Object
     sculpting_object_ref: bpy.types.Object = context.object
 
     # Copy Object Data to new Object and Save the reference
-    context.object.sculpting_layers_properties.multi_res_object = context.object.copy()
-    object_ref: bpy.types.Object = context.object.sculpting_layers_properties.multi_res_object
+    context.object.sculpting_layers.multi_res_object = context.object.copy()
+    object_ref: bpy.types.Object = context.object.sculpting_layers.multi_res_object
     object_ref.data = context.object.data.copy()
 
     # Add Fake User To New Object To Preserve on Save
     object_ref.use_fake_user = True
 
     # Get Modifier Name
-    modifier_name = context.object.sculpting_layers_properties.multi_res_modifier_name
+    modifier_name = context.object.sculpting_layers.multi_res_modifier_name
     # Get Modifier on New Object
     modifier = object_ref.modifiers[modifier_name]
 
@@ -179,47 +202,126 @@ def clear_resolution_config_callback(context):
 
     :return:
     """
-    # TODO: Move Function To Multi Resolution Module
     # TODO: Purge Object Mesh Data
-    # bpy.data.meshes.remove(context.object.sculpting_layers_properties.multi_res_object.data,  do_unlink=True)
-    if context.object.sculpting_layers_properties.multi_res_object is None:
+    # bpy.data.meshes.remove(context.object.sculpting_layers.multi_res_object.data,  do_unlink=True)
+    if context.object.sculpting_layers.multi_res_object is None:
         return
     # Delete the Duplicate Object
-    bpy.data.objects.remove(context.object.sculpting_layers_properties.multi_res_object,  do_unlink=True)
+    bpy.data.objects.remove(context.object.sculpting_layers.multi_res_object,  do_unlink=True)
 
 
 def add_layer_callback(context):
-    context.object.sculpting_layers_properties.layers.add()
+    """
+    Add New Layer
+
+    :param context: Current Context
+    :type context: bpy.context
+    """
+    raise NotImplementedError
 
 
 def delete_layer_callback(context, layer_index):
-    context.object.sculpting_layers_properties.layers.remove(layer_index)
+    """
+    Delete a Layer
+
+    :param context: Current Context
+    :type context: bpy.context
+
+    :param layer_index: Selected Layer Index
+    :type layer_index: int
+    """
+    raise NotImplementedError
 
 
 def delete_all_layers_callback(context):
-    context.object.sculpting_layers_properties.layers.clear()
+    """
+    Delete All Layers
+
+    :param context: Current Context
+    :type context: bpy.context
+    """
+    raise NotImplementedError
 
 
 def apply_layer_callback(context, layer_index):
-    context.object.sculpting_layers_properties.layers.remove(layer_index)
+    """
+    Apply A Layer
+
+    :param context: Current Context
+    :type context: bpy.context
+
+    :param layer_index: Selected Layer Index
+    :type layer_index: int
+    """
+    raise NotImplementedError
 
 
 def apply_all_layers_callback(context):
-    context.object.sculpting_layers_properties.layers.clear()
+    """
+    Apply All Layers
+
+    :param context: Current Context
+    :type context: bpy.context
+    """
+    raise NotImplementedError
 
 
 def hide_layer_callback(context, layer_index):
-    context.object.sculpting_layers_properties.layers[layer_index].is_enabled = False
+    """
+    Hide A Layer
+
+    :param context: Current Context
+    :type context: bpy.context
+
+    :param layer_index: Selected Layer Index
+    :type layer_index: int
+    """
+    raise NotImplementedError
 
 
 def show_layer_callback(context, layer_index):
-    context.object.sculpting_layers_properties.layers[layer_index].is_enabled = True
+    """
+    Show A Layer
+
+    :param context: Current Context
+    :type context: bpy.context
+
+    :param layer_index: Selected Layer Index
+    :type layer_index: int
+    """
+    raise NotImplementedError
 
 
 def start_layer_recording_callback(context, layer_index):
-    context.object.sculpting_layers_properties.layers[layer_index].is_recording = True
+    """
+    Start Recording on a Layer
+
+    :param context: Current Context
+    :type context: bpy.context
+
+    :param layer_index: Selected Layer Index
+    :type layer_index: int
+    """
+    raise NotImplementedError
 
 
 def stop_layer_recording_callback(context, layer_index):
-    context.object.sculpting_layers_properties.layers[layer_index].is_recording = False
+    """
+    Stop Recording on a Layer
 
+    :param context: Current Context
+    :type context: bpy.context
+
+    :param layer_index: Selected Layer Index
+    :type layer_index: int
+    """
+    raise NotImplementedError
+
+
+def update_layer_weight_callback(context, shape_key_name, weight):
+    """
+    Update Layer Weight
+    :param context: Current Context
+    :type context: bpy.context
+    """
+    raise NotImplementedError

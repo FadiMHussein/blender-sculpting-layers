@@ -16,6 +16,7 @@
 #
 from bpy.types import Panel
 
+from . import validations as multi_res_validations
 from .operators import IncreaseResolutionOperator, DecreaseResolutionOperator, UnSubdivideOperator, \
     ApplyResolutionConfigOperator, ClearResolutionConfigOperator
 from ..common import validations
@@ -25,7 +26,7 @@ from ..common.properties import SculptingLayersProperties
 
 class MultiResolutionPanel(Panel):
     """
-        Panel Class to Define MultiResollution Panel UI
+    Panel Class to Define MultiResollution Panel UI
     """
     bl_label = "MultiResolution Options"
     bl_idname = "SCULPT_PT_MultiResolution"
@@ -36,39 +37,27 @@ class MultiResolutionPanel(Panel):
 
     @classmethod
     def poll(cls, context):
-        """
-        MultiResolution Panel Activation Function
-
-        :param context: Current Context
-        :type context: bpy.types.Context
-
-        :return: object is active or not
-        :rtype: bool
-        """
         return context.object is not None
 
     def draw(self, context):
-        """
-        Sculpting Layers Panel Drawing Function
-
-        :param context: current context
-        :type context: bpy.context
-        """
         layout = self.layout
 
         # Get Addon Properties
-        properties: SculptingLayersProperties = context.object.sculpting_layers_properties
+        properties: SculptingLayersProperties = context.object.sculpting_layers
         # Check if Layout Should be Enabled and Assign
-        enabled = validations.addon_is_enabled(properties) and validations.can_enable_multires(context)
+        enabled = validations.addon_is_enabled(context.object)
         layout.enabled = enabled
 
         # Spit Validation Message
         if not enabled:
             layout.label(text="Enable Sculpting Layers First")
 
-        layout.row(align=True).prop(properties, "multi_resolution_enabled")
+        enable_row = layout.row(align=True)
+        enable_row.enabled = multi_res_validations.can_enable_multires(context.object)
+        enable_row.prop(properties, "multi_resolution_enabled")
 
-        can_init = validations.can_modify_multi_res_configs(properties)
+        can_init = multi_res_validations.can_modify_multi_res_configs(context.object)
+        can_change_res = multi_res_validations.can_change_res(context.object)
 
         res_col = layout.row(align=True)
         res_col.enabled = can_init
@@ -84,13 +73,16 @@ class MultiResolutionPanel(Panel):
         clear_row.enabled = not can_init
         clear_row.operator(ClearResolutionConfigOperator.bl_idname, icon="CANCEL")
 
-        if validations.can_change_res(properties):
+        if multi_res_validations.can_change_res(context.object):
             viewport_level_row = layout.row(align=True)
+            viewport_level_row.enabled = can_change_res
             viewport_level_row.prop(context.object.modifiers["Sculpting Layers"], "levels")
 
             sculpt_level_row = layout.row(align=True)
+            sculpt_level_row.enabled = can_change_res
             sculpt_level_row.prop(context.object.modifiers["Sculpting Layers"], "sculpt_levels")
 
             render_level_row = layout.row(align=True)
+            render_level_row.enabled = can_change_res
             render_level_row.prop(context.object.modifiers["Sculpting Layers"], "render_levels")
 

@@ -23,20 +23,22 @@ from .multi_res.operators import IncreaseResolutionOperator, DecreaseResolutionO
 from .multi_res.panels import MultiResolutionPanel
 from .basic.operators import AddLayerOperator, ApplyAllLayerOperator, DeleteAllLayerOperator, ApplyLayerOperator, \
     DeleteLayerOperator, ToggleLayerVisibilityOperator, ToggleLayerRecordingOperator, DisableSculptingLayersOperator, \
-    EnableSculptingLayersOperator
+    EnableSculptingLayersOperator, UpdateLayerWeighOperator
 from .common.properties import LayerProperties, SculptingLayersProperties
 from .basic.panels import BasicPanel, LayersPanel
 
 bl_info = {
     "name": "Sculpting Layers",
     "author": "Fadi Hussein",
-    "version": (0, 1),
+    "version": (0, 3),
     "blender": (2, 83, 0),
     "location": "Sculpting > Sidebar > Sculpting Layers",
     "description": "Sculpting Layers for Non-Destructive Sculpting Workflow",
     "warning": "Still in Development (May Experience Bugs and Performance Issues)",
     "wiki_url": "",
-    "category": "Sculpting"
+    "category": "Sculpting",
+    "tracker_url": "https://github.com/FadiMHussein/blender-sculpting-layers/issues",
+    "support": "COMMUNITY",
 }
 
 # ------------------------------------------------------------------------
@@ -70,6 +72,7 @@ classes = (
     UnSubdivideOperator,
     ApplyResolutionConfigOperator,
     ClearResolutionConfigOperator,
+    UpdateLayerWeighOperator,
     # Menus
 
     # Panels
@@ -89,7 +92,7 @@ def register():
         register_class(cls)
 
     # Add Sculpting Layers Properties to Object Type
-    bpy.types.Object.sculpting_layers_properties = PointerProperty(type=SculptingLayersProperties)
+    bpy.types.Object.sculpting_layers = PointerProperty(type=SculptingLayersProperties)
 
 
 def unregister():
@@ -102,7 +105,7 @@ def unregister():
         unregister_class(cls)
 
     # Delete Sculpting Layers Properties from Object Type
-    del bpy.types.Object.sculpting_layers_properties
+    del bpy.types.Object.sculpting_layers
 
 
 if __name__ == "__main__":

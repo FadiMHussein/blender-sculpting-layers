@@ -32,7 +32,7 @@ import bpy.types
 from bpy.props import (StringProperty,
                        BoolProperty,
                        FloatProperty,
-                       PointerProperty, CollectionProperty,
+                       PointerProperty, CollectionProperty, IntProperty,
                        )
 
 from bpy.types import PropertyGroup
@@ -71,13 +71,13 @@ class LayerProperties(PropertyGroup):
         description="Layer Weight",
         default=1,
         min=-1,
-        max=1
+        max=1,
+        update=callbacks.update_layer_weight_callback
     )
 
-    shape_key_pointer: PointerProperty(
-        type=bpy.types.Key,
+    shape_key_name: StringProperty(
         name="Shape Key",
-        description="Pointer to Shape Key"
+        description="Shape Key Name"
     )
 
 
@@ -120,6 +120,8 @@ class SculptingLayersProperties(PropertyGroup):
     )
 
     multi_res_modifier_name: StringProperty()
+
+    last_mix_relative_key_name: StringProperty()
 
     layers: CollectionProperty(
         type=LayerProperties

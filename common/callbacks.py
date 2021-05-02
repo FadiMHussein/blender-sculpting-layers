@@ -33,7 +33,7 @@ from bpy.types import PointerProperty
 
 
 def is_enabled_get(self):
-    return bpy.context.object.sculpting_layers_properties.is_enabled_status
+    return bpy.context.object.sculpting_layers.is_enabled_status
 
 
 def is_enabled_set(self, value):
@@ -45,7 +45,7 @@ def is_enabled_set(self, value):
 
 
 def is_multi_res_enabled_get(self):
-    return bpy.context.object.sculpting_layers_properties.multi_resolution_enabled_status
+    return bpy.context.object.sculpting_layers.multi_resolution_enabled_status
 
 
 def is_multi_res_enabled_set(self, value):
@@ -53,3 +53,7 @@ def is_multi_res_enabled_set(self, value):
         bpy.ops.object.enable_multi_res()
     else:
         bpy.ops.object.disable_multi_res()
+
+
+def update_layer_weight_callback(self, context):
+    bpy.ops.object.update_layer_weight(shape_key_name=self.shape_key_name, weight=self.weight)

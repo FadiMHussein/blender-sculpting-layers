@@ -48,27 +48,12 @@ class BasicPanel(Panel):
 
     @classmethod
     def poll(cls, context):
-        """
-        MultiResolution Panel Activation Function
-
-        :param context: Current Context
-        :type context: bpy.context
-
-        :return: object is active or not
-        :rtype: bool
-        """
         return context.object is not None
 
     def draw(self, context):
-        """
-        Sculpting Layers Panel Drawing Function
-
-        :param context: current context
-        :type context: bpy.context
-        """
         layout = self.layout
         # active_object = context.object
-        properties: SculptingLayersProperties = context.object.sculpting_layers_properties
+        properties: SculptingLayersProperties = context.object.sculpting_layers
 
         layout.prop(properties, "is_enabled")
 
@@ -86,38 +71,27 @@ class LayersPanel(Panel):
 
     @classmethod
     def poll(cls, context):
-        """
-        MultiResolution Panel Activation Function
-
-        :param context: Current Context
-        :type context: bpy.context
-
-        :return: object is active or not
-        :rtype: bool
-        """
         return context.object is not None
 
     def draw(self, context):
-        """
-        Sculpting Layers Panel Drawing Function
-
-        :param context: current context
-        :type context: bpy.context
-        """
         layout = self.layout
 
         # Get Addon Properties
-        properties: SculptingLayersProperties = context.object.sculpting_layers_properties
+        properties: SculptingLayersProperties = context.object.sculpting_layers
         # Check if Layout Should be Enabled and Assign
-        enabled = addon_is_enabled(properties) and can_add_layers(context)
+        enabled = addon_is_enabled(context.object) and can_add_layers(context.object)
         layout.enabled = enabled
+
+        can_rec = can_record(context.object)
 
         # Spit Validation Message
         if not enabled:
             layout.label(text="Enable Sculpting Layers First")
 
         # Add Layer Operator
-        layout.row(align=True).operator(AddLayerOperator.bl_idname, icon="PLUS")
+        add_row = layout.row(align=True)
+        add_row.enabled = can_rec
+        add_row.operator(AddLayerOperator.bl_idname, icon="PLUS")
 
         # Layer List
         layer_box = layout.box()
@@ -131,36 +105,38 @@ class LayersPanel(Panel):
         # Draw Layers
         layer_index = 0
         for layer in properties.layers:
-            layer_rows = layer_box.row(align=True)
-            layer_rows.column().prop(layer, "label")
+            layer_row = layer_box.row(align=True)
+            layer_row.column().prop(layer, "label")
+
+            layer_row.enabled = can_rec or layer.is_recording
 
             # Toggle Layer Recording Operator
             if layer.is_recording:
-                layer_rows.column().operator(
+                layer_row.column().operator(
                     ToggleLayerRecordingOperator.bl_idname, text="", icon="PAUSE"
                 ).layer_index = layer_index
             else:
-                layer_rows.column().operator(
+                layer_row.column().operator(
                     ToggleLayerRecordingOperator.bl_idname, text="", icon="PLAY"
                 ).layer_index = layer_index
 
             # Apply Layer Operator
-            layer_rows.column().operator(
+            layer_row.column().operator(
                 ApplyLayerOperator.bl_idname, text="", icon="CHECKMARK"
             ).layer_index = layer_index
 
             # Toggle Layer Visibility Operator
             if layer.is_enabled:
-                layer_rows.column().operator(
+                layer_row.column().operator(
                     ToggleLayerVisibilityOperator.bl_idname, text="", icon="HIDE_OFF"
                 ).layer_index = layer_index
             else:
-                layer_rows.column().operator(
+                layer_row.column().operator(
                     ToggleLayerVisibilityOperator.bl_idname, text="", icon="HIDE_ON"
                 ).layer_index = layer_index
 
             # Delete Layer Operator
-            layer_rows.column().operator(
+            layer_row.column().operator(
                 DeleteLayerOperator.bl_idname, text="", icon="REMOVE"
             ).layer_index = layer_index
 
@@ -171,6 +147,7 @@ class LayersPanel(Panel):
 
         # Global Layers Operators
         global_row = layout.row()
+        global_row.enabled = can_rec
         global_row.split()
         # Apply All Layers Operator
         global_row.operator(ApplyAllLayerOperator.bl_idname, icon="CHECKMARK")

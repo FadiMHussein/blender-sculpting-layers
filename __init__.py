@@ -35,7 +35,7 @@ bl_info = {
     "location": "Sculpting > Sidebar > Sculpting Layers",
     "description": "Sculpting Layers for Non-Destructive Sculpting Workflow",
     "warning": "Still in Development (May Experience Bugs and Performance Issues)",
-    "wiki_url": "",
+    "wiki_url": "https://github.com/FadiMHussein/blender-sculpting-layers/wiki",
     "category": "Sculpting",
     "tracker_url": "https://github.com/FadiMHussein/blender-sculpting-layers/issues",
     "support": "COMMUNITY",

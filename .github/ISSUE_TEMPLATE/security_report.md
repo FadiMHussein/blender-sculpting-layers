@@ -1,7 +1,7 @@
 ---
 name: Security Report
 about: Use this template to report a vulnerability
-title: "[Report SUMMARY]"
+title: "[REPORT SUMMARY]"
 labels: 
 assignees: 
 ---

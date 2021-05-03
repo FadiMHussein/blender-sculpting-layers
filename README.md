@@ -7,7 +7,7 @@ This Addon is Still in Development Please Report Bugs to Help Improve This Addon
 
 ---
 
- ![Alt text](https://github.com/FadiMHussein/blender-sculpting-layers/raw/main/preview.gif "Sculpting Layer Addon Preview")
+ ![Alt text](https://photos.app.goo.gl/jqJtvTtZnMXButQs7 "Sculpting Layer Addon Preview")
 
 ### Installation
 

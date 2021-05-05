@@ -49,17 +49,17 @@ A Wiki is being worked on .....
   - [x] Hiding/Showing Layers
   - [x] Changing Layers Weight
     
-- [ ] Multiple Resolution
+- [x] Multiple Resolution
   - [x] Adding Modifier
   - [x] Increasing/Decreasing Resolution
   - [x] Changing Resolution from Panel
   - [x] Applying/Removing Configurations
-  - [ ] Adding Layers
-  - [ ] Removing Layers
-  - [ ] Applying Layers
-  - [ ] Recording on Layers
-  - [ ] Hiding/Showing Layers
-  - [ ] Changing Layers Weight
+  - [x] Adding Layers
+  - [x] Removing Layers
+  - [x] Applying Layers
+  - [x] Recording on Layers
+  - [x] Hiding/Showing Layers
+  - [x] Changing Layers Weight
 
 ### Not Tested
 

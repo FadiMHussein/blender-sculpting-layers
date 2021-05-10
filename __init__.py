@@ -30,7 +30,7 @@ from .basic.panels import BasicPanel, LayersPanel
 bl_info = {
     "name": "Sculpting Layers",
     "author": "Fadi Hussein",
-    "version": (0, 3, 1),
+    "version": (0, 4, 0),
     "blender": (2, 83, 0),
     "location": "Sculpting > Sidebar > Sculpting Layers",
     "description": "Sculpting Layers for Non-Destructive Sculpting Workflow",

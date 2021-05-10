@@ -1,18 +1,18 @@
 #  Copyright (C) 2021 Fadi Hussein
-#  This file is part of BlenderSculptingLayers <https://github.com/FadiMHussein/blender-sculpting-layers>.
+#  This file is part of blender-sculpting-layers <https://github.com/FadiMHussein/blender-sculpting-layers>.
 #
-#  BlenderSculptingLayers is free software: you can redistribute it and/or modify
+#  blender-sculpting-layers is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
-#  BlenderSculptingLayers is distributed in the hope that it will be useful,
+#  blender-sculpting-layers is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
 #  You should have received a copy of the GNU General Public License
-#  along with BlenderSculptingLayers.  If not, see <http://www.gnu.org/licenses/>.
+#  along with blender-sculpting-layers.  If not, see <http://www.gnu.org/licenses/>.
 
 import bpy
 from bpy.props import PointerProperty
@@ -30,7 +30,7 @@ from .basic.panels import BasicPanel, LayersPanel
 bl_info = {
     "name": "Sculpting Layers",
     "author": "Fadi Hussein",
-    "version": (0, 3, 1),
+    "version": (0, 4, 0),
     "blender": (2, 83, 0),
     "location": "Sculpting > Sidebar > Sculpting Layers",
     "description": "Sculpting Layers for Non-Destructive Sculpting Workflow",

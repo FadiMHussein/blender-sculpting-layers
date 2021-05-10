@@ -1,36 +1,24 @@
 #   Copyright (C) 2021 Fadi Hussein
-#   This file is part of BlenderSculptingLayers <https://github.com/FadiMHussein/blender-sculpting-layers>.
+#   This file is part of blender-sculpting-layers <https://github.com/FadiMHussein/blender-sculpting-layers>.
 #
-#   BlenderSculptingLayers is free software: you can redistribute it and/or modify
+#   blender-sculpting-layers is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
 #   the Free Software Foundation, either version 3 of the License, or
 #   (at your option) any later version.
 #
-#   BlenderSculptingLayers is distributed in the hope that it will be useful,
+#   blender-sculpting-layers is distributed in the hope that it will be useful,
 #   but WITHOUT ANY WARRANTY; without even the implied warranty of
 #   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #   GNU General Public License for more details.
 #
 #   You should have received a copy of the GNU General Public License
-#   along with BlenderSculptingLayers.  If not, see <http://www.gnu.org/licenses/>.
-#
-#
-#   BlenderSculptingLayers is free software: you can redistribute it and/or modify
-#   it under the terms of the GNU General Public License as published by
-#   the Free Software Foundation, either version 3 of the License, or
-#   (at your option) any later version.
-#
-#   BlenderSculptingLayers is distributed in the hope that it will be useful,
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#   GNU General Public License for more details.
-#
-#   You should have received a copy of the GNU General Public License
-#   along with BlenderSculptingLayers.  If not, see <http://www.gnu.org/licenses/>.
+#   along with blender-sculpting-layers.  If not, see <http://www.gnu.org/licenses/>.
 #
 from bpy.types import Panel
 from ..common.properties import SculptingLayersProperties
-from ..common.validations import *
+from ..common import validations as common_validations
+from ..single_res import validations as single_res_validations
+from ..multi_res import validations as multi_res_validations
 from .operators import AddLayerOperator, ToggleLayerRecordingOperator, ApplyLayerOperator, \
     ToggleLayerVisibilityOperator, DeleteLayerOperator, ApplyAllLayerOperator, DeleteAllLayerOperator
 
@@ -79,10 +67,10 @@ class LayersPanel(Panel):
         # Get Addon Properties
         properties: SculptingLayersProperties = context.object.sculpting_layers
         # Check if Layout Should be Enabled and Assign
-        enabled = addon_is_enabled(context.object) and can_add_layers(context.object)
+        enabled = common_validations.addon_is_enabled(context.object) and (single_res_validations.can_modify_layers(context.object) or multi_res_validations.can_modify_layers(context.object))
         layout.enabled = enabled
 
-        can_rec = can_record(context.object)
+        can_rec = common_validations.can_record(context.object)
 
         # Spit Validation Message
         if not enabled:
